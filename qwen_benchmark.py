@@ -107,7 +107,31 @@ def load_model(model_name: str, device: str):
 # 4. Benchmark
 # -----------------------------------------------------------------------------
 
-def benchmark_model(model_name: str, prompt: str, max_new_tokens: int) -> dict:
+def build_context_prompt(
+    tokenizer,
+    base_prompt: str,
+    target_tokens: int,
+) -> str:
+    """Repeat and trim text to create a controlled prompt-token length."""
+    if target_tokens < 1:
+        raise ValueError("context_tokens must be at least 1")
+
+    base_ids = tokenizer(
+        base_prompt + " ",
+        add_special_tokens=False,
+    )["input_ids"]
+
+    repetitions = (target_tokens // len(base_ids)) + 1
+    token_ids = (base_ids * repetitions)[:target_tokens]
+    return tokenizer.decode(token_ids, skip_special_tokens=True)
+
+
+def benchmark_model(
+    model_name: str,
+    prompt: str,
+    max_new_tokens: int,
+    context_tokens: int,
+) -> dict:
     device = accelerator()
     print(f"\nLoading: {model_name}")
     print(f"Accelerator: {device}")
@@ -117,6 +141,7 @@ def benchmark_model(model_name: str, prompt: str, max_new_tokens: int) -> dict:
         torch.cuda.reset_peak_memory_stats()
 
     tokenizer, model, input_device = load_model(model_name, device)
+    prompt = build_context_prompt(tokenizer, prompt, context_tokens)
 
     messages = [{"role": "user", "content": prompt}]
     formatted_prompt = tokenizer.apply_chat_template(
@@ -170,6 +195,7 @@ def benchmark_model(model_name: str, prompt: str, max_new_tokens: int) -> dict:
 
     result = {
         "parameters": parameter_count,
+        "requested_context_tokens": context_tokens,
         "input_tokens": input_tokens,
         "generated_tokens": generated_tokens,
         "seconds": elapsed,
@@ -205,6 +231,12 @@ def main() -> None:
     parser.add_argument("--size", choices=MODELS, default="0.5B")
     parser.add_argument("--tokens", type=int, default=100)
     parser.add_argument(
+        "--context-tokens",
+        type=int,
+        default=128,
+        help="Number of tokens placed in the user prompt.",
+    )
+    parser.add_argument(
         "--prompt",
         default="Explain how a CNC machine works.",
     )
@@ -221,7 +253,12 @@ def main() -> None:
     if args.inspect_only:
         return
 
-    benchmark_model(model_name, args.prompt, args.tokens)
+    benchmark_model(
+        model_name,
+        args.prompt,
+        args.tokens,
+        args.context_tokens,
+    )
 
 
 if __name__ == "__main__":
