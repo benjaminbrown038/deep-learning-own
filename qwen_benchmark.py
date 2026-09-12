@@ -170,6 +170,7 @@ def benchmark_model(
     with torch.inference_mode():
         outputs = model.generate(
             **inputs,
+            min_new_tokens=max_new_tokens,
             max_new_tokens=max_new_tokens,
             do_sample=False,
             use_cache=True,
