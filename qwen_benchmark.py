@@ -107,24 +107,29 @@ def load_model(model_name: str, device: str):
 # 4. Benchmark
 # -----------------------------------------------------------------------------
 
-def build_context_prompt(
-    tokenizer,
-    base_prompt: str,
-    target_tokens: int,
-) -> str:
-    """Repeat and trim text to create a controlled prompt-token length."""
-    if target_tokens < 1:
-        raise ValueError("context_tokens must be at least 1")
+def build_context_prompt(tokenizer, base_prompt, context_tokens):
+    filler = (
+        "Computer numerical control machines automate manufacturing processes. "
+        "They use programmed instructions to control cutting tools, position, "
+        "speed, feed rate, and machining operations. "
+    )
 
-    base_ids = tokenizer(
-        base_prompt + " ",
-        add_special_tokens=False,
-    )["input_ids"]
+    question = f"\n\nQuestion: {base_prompt}"
 
-    repetitions = (target_tokens // len(base_ids)) + 1
-    token_ids = (base_ids * repetitions)[:target_tokens]
-    return tokenizer.decode(token_ids, skip_special_tokens=True)
+    if context_tokens <= 0:
+        return base_prompt
 
+    filler_tokens = tokenizer.encode(filler, add_special_tokens=False)
+    question_tokens = tokenizer.encode(question, add_special_tokens=False)
+
+    target_filler_tokens = max(0, context_tokens - len(question_tokens))
+
+    repeated_tokens = (
+        filler_tokens
+        * ((target_filler_tokens // len(filler_tokens)) + 1)
+    )[:target_filler_tokens]
+
+    return tokenizer.decode(repeated_tokens) + question
 
 def benchmark_model(
     model_name: str,
