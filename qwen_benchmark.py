@@ -60,8 +60,7 @@ def inspect_model(model_name: str) -> dict:
         "head_dimension": width // config.num_attention_heads,
         "mlp_width": config.intermediate_size,
         "vocabulary": config.vocab_size,
-        "rough_complexity_LxD2": layers * width**2,
-    }
+        "rough_complexity_LxD2": layers * width**2}
 
 
 def print_architecture(size: str, architecture: dict) -> None:
@@ -82,24 +81,20 @@ def load_model(model_name: str, device: str):
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             dtype=torch.float16,
-            device_map="auto",
-        )
+            device_map="auto")
         input_device = next(model.parameters()).device
     elif device == "mps":
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             dtype=torch.float16,
-            low_cpu_mem_usage=True,
-        ).to("mps")
+            low_cpu_mem_usage=True).to("mps")
         input_device = torch.device("mps")
     else:
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             dtype=torch.float32,
-            low_cpu_mem_usage=True,
-        )
+            low_cpu_mem_usage=True)
         input_device = torch.device("cpu")
-
     return tokenizer, model.eval(), input_device
 
 
@@ -111,8 +106,7 @@ def build_context_prompt(tokenizer, base_prompt, context_tokens):
     filler = (
         "Computer numerical control machines automate manufacturing processes. "
         "They use programmed instructions to control cutting tools, position, "
-        "speed, feed rate, and machining operations. "
-    )
+        "speed, feed rate, and machining operations. ")
 
     question = f"\n\nQuestion: {base_prompt}"
 
@@ -121,13 +115,8 @@ def build_context_prompt(tokenizer, base_prompt, context_tokens):
 
     filler_tokens = tokenizer.encode(filler, add_special_tokens=False)
     question_tokens = tokenizer.encode(question, add_special_tokens=False)
-
     target_filler_tokens = max(0, context_tokens - len(question_tokens))
-
-    repeated_tokens = (
-        filler_tokens
-        * ((target_filler_tokens // len(filler_tokens)) + 1)
-    )[:target_filler_tokens]
+    repeated_tokens = (filler_tokens * ((target_filler_tokens // len(filler_tokens)) + 1))[:target_filler_tokens]
 
     return tokenizer.decode(repeated_tokens) + question
 
@@ -135,8 +124,8 @@ def benchmark_model(
     model_name: str,
     prompt: str,
     max_new_tokens: int,
-    context_tokens: int,
-) -> dict:
+    context_tokens: int)  -> dict:
+    
     device = accelerator()
     print(f"\nLoading: {model_name}")
     print(f"Accelerator: {device}")
@@ -152,26 +141,26 @@ def benchmark_model(
     formatted_prompt = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
-        add_generation_prompt=True,
-    )
+        add_generation_prompt=True,)
     inputs = tokenizer(formatted_prompt, return_tensors="pt").to(input_device)
     input_tokens = inputs["input_ids"].shape[1]
 
     # Warm up one short decode so first-run setup is excluded from the timer.
+    
     with torch.inference_mode():
         model.generate(
             **inputs,
             max_new_tokens=3,
             do_sample=False,
             use_cache=True,
-            pad_token_id=tokenizer.eos_token_id,
-        )
-
+            pad_token_id=tokenizer.eos_token_id,)
     synchronize(device)
+    
     if device == "cuda":
         torch.cuda.reset_peak_memory_stats()
 
     start = time.perf_counter()
+    
     with torch.inference_mode():
         outputs = model.generate(
             **inputs,
@@ -179,9 +168,9 @@ def benchmark_model(
             max_new_tokens=max_new_tokens,
             do_sample=False,
             use_cache=True,
-            pad_token_id=tokenizer.eos_token_id,
-        )
+            pad_token_id=tokenizer.eos_token_id,)  
     synchronize(device)
+
     elapsed = time.perf_counter() - start
 
     generated_tokens = outputs.shape[1] - input_tokens
@@ -196,8 +185,7 @@ def benchmark_model(
 
     response = tokenizer.decode(
         outputs[0, input_tokens:],
-        skip_special_tokens=True,
-    )
+        skip_special_tokens=True)
 
     result = {
         "parameters": parameter_count,
@@ -206,25 +194,26 @@ def benchmark_model(
         "generated_tokens": generated_tokens,
         "seconds": elapsed,
         "tokens_per_second": generated_tokens / elapsed,
-        "accelerator_memory_gb": memory_gb,
-    }
+        "accelerator_memory_gb": memory_gb}
 
     print("\nResults")
     print(f"Parameters: {parameter_count:,}")
     print(f"Generated tokens: {generated_tokens}")
     print(f"Time: {elapsed:.2f} seconds")
     print(f"Tokens/sec: {result['tokens_per_second']:.2f}")
+    
     if memory_gb is not None:
         print(f"Accelerator memory: {memory_gb:.2f} GB")
     print(f"\nResponse:\n{response}")
 
     del outputs, inputs, model, tokenizer
+    
     gc.collect()
+    
     if device == "cuda":
         torch.cuda.empty_cache()
     elif device == "mps":
         torch.mps.empty_cache()
-
     return result
 
 
@@ -236,21 +225,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Benchmark one Qwen2.5 model.")
     parser.add_argument("--size", choices=MODELS, default="0.5B")
     parser.add_argument("--tokens", type=int, default=100)
-    parser.add_argument(
-        "--context-tokens",
-        type=int,
-        default=128,
-        help="Number of tokens placed in the user prompt.",
-    )
-    parser.add_argument(
-        "--prompt",
-        default="Explain how a CNC machine works.",
-    )
-    parser.add_argument(
-        "--inspect-only",
-        action="store_true",
-        help="Print model architecture without downloading model weights.",
-    )
+    parser.add_argument("--context-tokens", type=int, default=128, help="Number of tokens placed in the user prompt.")
+    parser.add_argument("--prompt", default="Explain how a CNC machine works.")
+    parser.add_argument("--inspect-only", action="store_true", help="Print model architecture without downloading model weights.")
     args = parser.parse_args()
 
     model_name = MODELS[args.size]
@@ -263,8 +240,7 @@ def main() -> None:
         model_name,
         args.prompt,
         args.tokens,
-        args.context_tokens,
-    )
+        args.context_tokens)
 
 
 if __name__ == "__main__":
