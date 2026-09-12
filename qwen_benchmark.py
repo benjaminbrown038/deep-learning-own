@@ -236,12 +236,6 @@ def main() -> None:
 
     if args.inspect_only:
         return
-
-    benchmark_model(
-        model_name,
-        args.prompt,
-        args.tokens,
-        args.context_tokens)
     
     if args.context_sweep:
         context_lengths = args.context_sweep
@@ -249,15 +243,15 @@ def main() -> None:
         context_lengths = [args.context_tokens]
 
     for context_length in context_lengths:
-        print(f"\n{'=' *'=' * }")
+        print("\n" + "=" * 48)
         print(f"Context length: {context_length}")
         print("=" * 48)
 
-    benchmark_model(
-        model_name=model_name,
-        prompt=args.prompt,
-        max_new_tokens=args.tokens,
-        context_tokens=context_length)
+        benchmark_model(
+            model_name=model_name,
+            prompt=args.prompt,
+            max_new_tokens=args.tokens,
+            context_tokens=context_length)
 
 
 if __name__ == "__main__":
