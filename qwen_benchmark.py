@@ -228,6 +228,7 @@ def main() -> None:
     parser.add_argument("--context-tokens", type=int, default=128, help="Number of tokens placed in the user prompt.")
     parser.add_argument("--prompt", default="Explain how a CNC machine works.")
     parser.add_argument("--inspect-only", action="store_true", help="Print model architecture without downloading model weights.")
+    parser.add_argument("--context-sweep", type=int, nargs="+", help="Test multiple context lengths, for example: 128 512 1024")
     args = parser.parse_args()
 
     model_name = MODELS[args.size]
@@ -241,6 +242,22 @@ def main() -> None:
         args.prompt,
         args.tokens,
         args.context_tokens)
+    
+    if args.context_sweep:
+        context_lengths = args.context_sweep
+    else:
+        context_lengths = [args.context_tokens]
+
+    for context_length in context_lengths:
+        print(f"\n{'=' *'=' * }")
+        print(f"Context length: {context_length}")
+        print("=" * 48)
+
+    benchmark_model(
+        model_name=model_name,
+        prompt=args.prompt,
+        max_new_tokens=args.tokens,
+        context_tokens=context_length)
 
 
 if __name__ == "__main__":
