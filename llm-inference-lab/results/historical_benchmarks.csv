@@ -1,9 +1,0 @@
-model,size,precision,accelerator_name,requested_context_tokens,generated_tokens,total_seconds,decode_tokens_per_second,peak_accelerator_memory_gb
-Qwen/Qwen2.5-0.5B-Instruct,0.5B,fp16,Apple MPS,128,50,1.22,41.09,0.99
-Qwen/Qwen2.5-0.5B-Instruct,0.5B,fp16,Apple MPS,512,50,1.31,38.08,0.99
-Qwen/Qwen2.5-0.5B-Instruct,0.5B,fp16,Apple MPS,1024,50,1.54,32.42,0.99
-Qwen/Qwen2.5-1.5B-Instruct,1.5B,fp16,Tesla T4,128,50,1.77,28.24,3.11
-Qwen/Qwen2.5-1.5B-Instruct,1.5B,fp16,Tesla T4,512,50,1.82,27.49,3.16
-Qwen/Qwen2.5-1.5B-Instruct,1.5B,fp16,Tesla T4,1024,50,1.96,25.50,3.28
-Qwen/Qwen2.5-1.5B-Instruct,1.5B,fp16,Tesla T4,2048,50,2.49,20.08,3.69
-

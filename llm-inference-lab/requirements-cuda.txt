@@ -1,3 +1,0 @@
--r requirements.txt
-bitsandbytes>=0.43
-
