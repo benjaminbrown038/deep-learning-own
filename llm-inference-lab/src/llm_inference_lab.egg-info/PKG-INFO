@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: llm-inference-lab
+Version: 0.1.0
+Summary: Reproducible Qwen inference benchmarking, quantization, plotting, and profiling
+Requires-Python: >=3.9
+Requires-Dist: accelerate>=0.30
+Requires-Dist: matplotlib>=3.7
+Requires-Dist: pandas>=2.0
+Requires-Dist: psutil>=5.9
+Requires-Dist: torch>=2.2
+Requires-Dist: transformers>=4.45
+Provides-Extra: cuda
+Requires-Dist: bitsandbytes>=0.43; extra == "cuda"
+Provides-Extra: test
+Requires-Dist: pytest>=8; extra == "test"
