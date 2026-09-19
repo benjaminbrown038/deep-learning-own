@@ -8,6 +8,7 @@ import torch
 from .benchmark import benchmark_loaded_model, print_result
 from .config import MODELS, PRECISIONS
 from .hardware import accelerator, collect_hardware
+from .learning.demo import run_learning_track
 from .model_loader import load_model
 from .plotting import create_plots
 from .profiler import profile_model
@@ -115,6 +116,17 @@ def build_parser() -> argparse.ArgumentParser:
     roofline.add_argument("--csv", default="results/roofline.csv")
     roofline.add_argument("--plot", default="charts/roofline.png")
     roofline.set_defaults(func=run_roofline)
+
+    learn = sub.add_parser(
+        "learn",
+        help="Run the arithmetic-to-transformer teaching examples",
+    )
+    learn.add_argument(
+        "--stage",
+        choices=("arithmetic", "memory", "scaling", "transformer", "all"),
+        default="all",
+    )
+    learn.set_defaults(func=lambda args: run_learning_track(args.stage))
     return parser
 
 

@@ -3,6 +3,22 @@
 A reproducible project for studying how model scale, context length, numerical
 precision, hardware, and CUDA execution affect Qwen2.5 inference.
 
+## Purpose
+
+Understand what makes LLM inference fast or slow. The repository progresses
+from a visible neural-network calculation, to byte counting, quantization and
+batching, and finally transformer attention and KV-cache behavior. The goal is
+to explain tokens per second rather than merely report it.
+
+Run the complete learning track:
+
+```bash
+llm-lab learn --stage all
+```
+
+See [`docs/LEARNING_PATH.md`](docs/LEARNING_PATH.md) for the equations and the
+four-stage progression.
+
 ## What it implements
 
 - exact prefill and manual token-by-token decode timing;
@@ -17,6 +33,7 @@ precision, hardware, and CUDA execution affect Qwen2.5 inference.
 - an NVIDIA Nsight Systems launch script;
 - analytical operation-level roofline and bottleneck reports;
 - historical results from the earlier Apple MPS and Tesla T4 experiments.
+- runnable arithmetic, memory, quantization, batching, and transformer lessons.
 
 ## Installation
 
