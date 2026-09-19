@@ -1,0 +1,2 @@
+# Only dependency. pip selects a release compatible with your Python/platform.
+torch>=2.2,<3
