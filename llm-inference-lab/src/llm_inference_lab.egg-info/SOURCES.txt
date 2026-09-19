@@ -18,6 +18,15 @@ src/llm_lab/profiler.py
 src/llm_lab/prompt.py
 src/llm_lab/roofline.py
 src/llm_lab/storage.py
+src/llm_lab/experiments/__init__.py
+src/llm_lab/experiments/batch.py
+src/llm_lab/experiments/common.py
+src/llm_lab/experiments/context.py
+src/llm_lab/experiments/depth.py
+src/llm_lab/experiments/precision.py
+src/llm_lab/experiments/runner.py
+src/llm_lab/experiments/shape.py
+src/llm_lab/experiments/width.py
 src/llm_lab/learning/__init__.py
 src/llm_lab/learning/arithmetic.py
 src/llm_lab/learning/demo.py

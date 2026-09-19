@@ -15,7 +15,7 @@ from .profiler import profile_model
 from .prompt import build_context_prompt, tokenize_chat
 from .roofline import build_roofline_report, print_analysis
 from .storage import append_result, save_run_json
-
+from .experiments.runner import run_experiment
 
 def cleanup(device: str) -> None:
     gc.collect()
@@ -127,6 +127,48 @@ def build_parser() -> argparse.ArgumentParser:
         default="all",
     )
     learn.set_defaults(func=lambda args: run_learning_track(args.stage))
+    
+    experiment = sub.add_parser(
+    "experiment",
+    help="Run a mathematical scaling experiment and save CSV plus charts",
+)
+
+    experiment.add_argument(
+        "name",
+        choices=(
+        "width",
+        "shape",
+        "depth",
+        "batch",
+        "precision",
+        "context",
+    ),
+)
+
+    experiment.add_argument(
+    "--values",
+    type=int,
+    nargs="+",
+)
+
+    experiment.add_argument(
+    "--device",
+    choices=("auto", "cpu", "mps", "cuda"),
+    default="auto",
+)
+
+    experiment.add_argument(
+    "--precision",
+    choices=("fp32", "fp16", "bf16"),
+    default="fp32",
+)
+
+    experiment.add_argument("--width", type=int, default=1024)
+    experiment.add_argument("--warmup", type=int, default=3)
+    experiment.add_argument("--repeats", type=int, default=20)
+    experiment.add_argument("--output-dir", default="experiments")
+    experiment.set_defaults(func=run_experiment)
+    
     return parser
 
 
