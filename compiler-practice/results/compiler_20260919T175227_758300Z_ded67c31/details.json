@@ -1,0 +1,182 @@
+{
+  "equation": "Y = max(X @ W.T + bias, 0)",
+  "timer_scope": "Python dispatch plus synchronous single-thread CPU C kernels",
+  "excluded_from_timer": [
+    "graph building",
+    "compilation",
+    "allocation",
+    "validation",
+    "saving"
+  ],
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "processor": "arm",
+  "python": "3.9.6 (default, Oct 17 2025, 17:15:53) \n[Clang 17.0.0 (clang-1700.4.4.1)]",
+  "cpu_model_note": "processor can be empty; hardware clock and RAM traffic are not measured",
+  "sample_order": [
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ]
+  ],
+  "sample_total_seconds": {
+    "separate": [
+      0.014522499999999994,
+      0.006988333000000013,
+      0.006397666000000024,
+      0.00527758300000003,
+      0.0050755000000000106,
+      0.004641208000000008,
+      0.004509709000000028,
+      0.004404875000000086,
+      0.00416354200000002,
+      0.004126249999999998
+    ],
+    "fused": [
+      0.008894165999999926,
+      0.007202040999999992,
+      0.005406958000000017,
+      0.0050939580000000095,
+      0.004524707999999933,
+      0.004345584000000069,
+      0.004092708000000056,
+      0.004029457999999986,
+      0.004075208000000052,
+      0.003796540999999931
+    ]
+  },
+  "builds": {
+    "separate": {
+      "compiler": "/usr/bin/cc",
+      "compiler_version": "Apple clang version 17.0.0 (clang-1700.4.4.1)",
+      "compile_command": [
+        "/usr/bin/cc",
+        "-O3",
+        "-std=c99",
+        "-fPIC",
+        "-ffp-contract=off",
+        "-dynamiclib",
+        "results/compiler_20260919T175227_758300Z_ded67c31/separate.c",
+        "-o",
+        "results/compiler_20260919T175227_758300Z_ded67c31/separate.dylib"
+      ],
+      "compile_seconds": 0.054147125000000004,
+      "compiler_messages": ""
+    },
+    "fused": {
+      "compiler": "/usr/bin/cc",
+      "compiler_version": "Apple clang version 17.0.0 (clang-1700.4.4.1)",
+      "compile_command": [
+        "/usr/bin/cc",
+        "-O3",
+        "-std=c99",
+        "-fPIC",
+        "-ffp-contract=off",
+        "-dynamiclib",
+        "results/compiler_20260919T175227_758300Z_ded67c31/fused.c",
+        "-o",
+        "results/compiler_20260919T175227_758300Z_ded67c31/fused.dylib"
+      ],
+      "compile_seconds": 0.07672212499999997,
+      "compiler_messages": ""
+    }
+  },
+  "results": [
+    {
+      "mode": "separate",
+      "width": 128,
+      "batch": 1,
+      "dtype": "fp32",
+      "device": "cpu",
+      "warmup": 5,
+      "iterations": 1000,
+      "repeats": 10,
+      "seed": 0,
+      "weight_values": 16384,
+      "bias_values": 128,
+      "parameter_values_untrained": 16512,
+      "matmul_flops_approx": 32768,
+      "bias_additions": 128,
+      "relu_comparisons": 128,
+      "kernel_calls_per_evaluation": 3,
+      "logical_tensor_storage_bytes": 68096,
+      "temporary_tensor_bytes": 1024,
+      "ideal_tensor_boundary_bytes": 69120,
+      "output_check": "passed",
+      "checked_outputs": 64,
+      "total_outputs": 128,
+      "max_abs_error": 1.389633680348723e-07,
+      "compile_seconds": 0.054147125000000004,
+      "median_seconds_per_evaluation": 4.858354000000009e-06,
+      "min_seconds_per_evaluation": 4.126249999999998e-06,
+      "max_seconds_per_evaluation": 1.4522499999999994e-05,
+      "examples_per_second": 205831.02836886692
+    },
+    {
+      "mode": "fused",
+      "width": 128,
+      "batch": 1,
+      "dtype": "fp32",
+      "device": "cpu",
+      "warmup": 5,
+      "iterations": 1000,
+      "repeats": 10,
+      "seed": 0,
+      "weight_values": 16384,
+      "bias_values": 128,
+      "parameter_values_untrained": 16512,
+      "matmul_flops_approx": 32768,
+      "bias_additions": 128,
+      "relu_comparisons": 128,
+      "kernel_calls_per_evaluation": 1,
+      "logical_tensor_storage_bytes": 67072,
+      "temporary_tensor_bytes": 0,
+      "ideal_tensor_boundary_bytes": 67072,
+      "output_check": "passed",
+      "checked_outputs": 64,
+      "total_outputs": 128,
+      "max_abs_error": 1.389633680348723e-07,
+      "compile_seconds": 0.07672212499999997,
+      "median_seconds_per_evaluation": 4.435146e-06,
+      "min_seconds_per_evaluation": 3.796540999999931e-06,
+      "max_seconds_per_evaluation": 8.894165999999926e-06,
+      "examples_per_second": 225471.72066037962
+    }
+  ]
+}

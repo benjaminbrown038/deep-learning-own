@@ -1,0 +1,95 @@
+{
+  "fused": {
+    "nodes": [
+      {
+        "name": "X",
+        "operation": "input",
+        "inputs": [],
+        "shape": [
+          1,
+          128
+        ]
+      },
+      {
+        "name": "W",
+        "operation": "input",
+        "inputs": [],
+        "shape": [
+          128,
+          128
+        ]
+      },
+      {
+        "name": "bias",
+        "operation": "input",
+        "inputs": [],
+        "shape": [
+          128
+        ]
+      },
+      {
+        "name": "Z",
+        "operation": "matmul_transpose",
+        "inputs": [
+          "X",
+          "W"
+        ],
+        "shape": [
+          1,
+          128
+        ]
+      },
+      {
+        "name": "A",
+        "operation": "add_bias",
+        "inputs": [
+          "Z",
+          "bias"
+        ],
+        "shape": [
+          1,
+          128
+        ]
+      },
+      {
+        "name": "Y",
+        "operation": "relu",
+        "inputs": [
+          "A"
+        ],
+        "shape": [
+          1,
+          128
+        ]
+      }
+    ],
+    "kernels": [
+      {
+        "name": "dense_relu",
+        "operations": [
+          "Z",
+          "A",
+          "Y"
+        ],
+        "inputs": [
+          "X",
+          "W",
+          "bias"
+        ],
+        "output": "Y"
+      }
+    ],
+    "costs": {
+      "weight_values": 16384,
+      "bias_values": 128,
+      "parameter_values_untrained": 16512,
+      "matmul_flops_approx": 32768,
+      "bias_additions": 128,
+      "relu_comparisons": 128,
+      "kernel_calls_per_evaluation": 1,
+      "logical_tensor_storage_bytes": 67072,
+      "temporary_tensor_bytes": 0,
+      "ideal_tensor_boundary_bytes": 67072
+    }
+  }
+}

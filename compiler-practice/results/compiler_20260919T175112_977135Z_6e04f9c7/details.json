@@ -1,0 +1,164 @@
+{
+  "equation": "Y = max(X @ W.T + bias, 0)",
+  "timer_scope": "Python dispatch plus synchronous single-thread CPU C kernels",
+  "excluded_from_timer": [
+    "graph building",
+    "compilation",
+    "allocation",
+    "validation",
+    "saving"
+  ],
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "processor": "arm",
+  "python": "3.9.6 (default, Oct 17 2025, 17:15:53) \n[Clang 17.0.0 (clang-1700.4.4.1)]",
+  "cpu_model_note": "processor can be empty; hardware clock and RAM traffic are not measured",
+  "sample_order": [
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ],
+    [
+      "fused",
+      "separate"
+    ],
+    [
+      "separate",
+      "fused"
+    ]
+  ],
+  "sample_total_seconds": {
+    "separate": [
+      0.02796879199999991,
+      0.017695459000000024,
+      0.017630541999999916,
+      0.01755058300000001,
+      0.017565667000000063,
+      0.01756379199999991,
+      0.017557542000000037
+    ],
+    "fused": [
+      0.021549708,
+      0.019208707999999963,
+      0.017527791999999986,
+      0.01763229200000005,
+      0.017541959000000107,
+      0.017547957999999975,
+      0.017574083999999934
+    ]
+  },
+  "builds": {
+    "separate": {
+      "compiler": "/usr/bin/cc",
+      "compiler_version": "Apple clang version 17.0.0 (clang-1700.4.4.1)",
+      "compile_command": [
+        "/usr/bin/cc",
+        "-O3",
+        "-std=c99",
+        "-fPIC",
+        "-ffp-contract=off",
+        "-dynamiclib",
+        "results/compiler_20260919T175112_977135Z_6e04f9c7/separate.c",
+        "-o",
+        "results/compiler_20260919T175112_977135Z_6e04f9c7/separate.dylib"
+      ],
+      "compile_seconds": 0.051938625,
+      "compiler_messages": ""
+    },
+    "fused": {
+      "compiler": "/usr/bin/cc",
+      "compiler_version": "Apple clang version 17.0.0 (clang-1700.4.4.1)",
+      "compile_command": [
+        "/usr/bin/cc",
+        "-O3",
+        "-std=c99",
+        "-fPIC",
+        "-ffp-contract=off",
+        "-dynamiclib",
+        "results/compiler_20260919T175112_977135Z_6e04f9c7/fused.c",
+        "-o",
+        "results/compiler_20260919T175112_977135Z_6e04f9c7/fused.dylib"
+      ],
+      "compile_seconds": 0.05734329099999996,
+      "compiler_messages": ""
+    }
+  },
+  "results": [
+    {
+      "mode": "separate",
+      "width": 512,
+      "batch": 1,
+      "dtype": "fp32",
+      "device": "cpu",
+      "warmup": 5,
+      "iterations": 200,
+      "repeats": 7,
+      "seed": 0,
+      "weight_values": 262144,
+      "bias_values": 512,
+      "parameter_values_untrained": 262656,
+      "matmul_flops_approx": 524288,
+      "bias_additions": 512,
+      "relu_comparisons": 512,
+      "kernel_calls_per_evaluation": 3,
+      "logical_tensor_storage_bytes": 1058816,
+      "temporary_tensor_bytes": 4096,
+      "ideal_tensor_boundary_bytes": 1062912,
+      "output_check": "passed",
+      "checked_outputs": 64,
+      "total_outputs": 512,
+      "max_abs_error": 3.669037353937199e-07,
+      "compile_seconds": 0.051938625,
+      "median_seconds_per_evaluation": 8.782833500000031e-05,
+      "min_seconds_per_evaluation": 8.775291500000004e-05,
+      "max_seconds_per_evaluation": 0.00013984395999999953,
+      "examples_per_second": 11385.847175629555
+    },
+    {
+      "mode": "fused",
+      "width": 512,
+      "batch": 1,
+      "dtype": "fp32",
+      "device": "cpu",
+      "warmup": 5,
+      "iterations": 200,
+      "repeats": 7,
+      "seed": 0,
+      "weight_values": 262144,
+      "bias_values": 512,
+      "parameter_values_untrained": 262656,
+      "matmul_flops_approx": 524288,
+      "bias_additions": 512,
+      "relu_comparisons": 512,
+      "kernel_calls_per_evaluation": 1,
+      "logical_tensor_storage_bytes": 1054720,
+      "temporary_tensor_bytes": 0,
+      "ideal_tensor_boundary_bytes": 1054720,
+      "output_check": "passed",
+      "checked_outputs": 64,
+      "total_outputs": 512,
+      "max_abs_error": 3.669037353937199e-07,
+      "compile_seconds": 0.05734329099999996,
+      "median_seconds_per_evaluation": 8.787041999999967e-05,
+      "min_seconds_per_evaluation": 8.763895999999994e-05,
+      "max_seconds_per_evaluation": 0.00010774854000000001,
+      "examples_per_second": 11380.393993792264
+    }
+  ]
+}
